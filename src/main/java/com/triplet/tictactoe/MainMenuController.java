@@ -36,9 +36,9 @@ public class MainMenuController {
 
     @FXML  // "Host a new game" button -> "HostMenu" scene
     public void hostANewGame(ActionEvent event) throws Exception {
-        setRootSceneStage(event, "secondary");
+        setRootSceneStage(event, "HostMenu");
     }
-
+    
     @FXML  // "Ranking" button -> "Ranking" scene
     public void Ranking(ActionEvent event) throws Exception {
         setRootSceneStage(event, "primary");
@@ -49,7 +49,7 @@ public class MainMenuController {
         Desktop.getDesktop().browse(new URI("https://github.com/CaoKimDo/tictactoe"));
     }
     
-    @FXML  // "Quit" button -> Confirm and close the game
+    @FXML  // "Quit" button -> Confirm & close the game
     public void Quit(ActionEvent event) throws Exception {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         

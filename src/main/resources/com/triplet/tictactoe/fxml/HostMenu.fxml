@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.triplet.tictactoe.HostController">
+   <children>
+      <ImageView fitHeight="240.0" fitWidth="800.0" pickOnBounds="true">
+         <image>
+            <Image url="@../images/Banner.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="305.0" layoutY="490.0" mnemonicParsing="false" onAction="#host" prefHeight="26.0" prefWidth="190.0" text="Host a new game" />
+      <Button layoutX="30.0" layoutY="550.0" mnemonicParsing="false" onAction="#returnMainMenu" text="Return" />
+      <Label layoutX="160.0" layoutY="435.0" text="Your player's name: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="543.0" layoutY="395.0" text=" minute(s)">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="348.0" layoutY="395.0" text="        Game time: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="294.0" layoutY="395.0" text=" to win">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="160.0" layoutY="395.0" text="Requires ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="312.0" layoutY="355.0" text="        Grid height: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="160.0" layoutY="355.0" text="Grid width: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="160.0" layoutY="315.0" text="Room password: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="160.0" layoutY="275.0" text="Room name: ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="hostPlayerNameTextField" alignment="CENTER" layoutX="321.0" layoutY="435.0" prefHeight="26.0" prefWidth="319.0" />
+      <TextField fx:id="gameTimeTextField" alignment="CENTER" layoutX="483.0" layoutY="395.0" prefHeight="26.0" prefWidth="60.0" />
+      <TextField fx:id="winConditionTextField" alignment="CENTER" layoutX="234.0" layoutY="395.0" prefHeight="26.0" prefWidth="60.0" />
+      <TextField fx:id="gridHeightTextField" alignment="CENTER" layoutX="451.0" layoutY="355.0" prefHeight="26.0" prefWidth="60.0" />
+      <TextField fx:id="gridWidthTextField" alignment="CENTER" layoutX="252.0" layoutY="355.0" prefHeight="26.0" prefWidth="60.0" />
+      <TextField fx:id="roomPasswordTextField" alignment="CENTER" layoutX="298.0" layoutY="315.0" prefHeight="26.0" prefWidth="342.0" />
+      <TextField fx:id="roomNameTextField" alignment="CENTER" layoutX="268.0" layoutY="275.0" prefHeight="26.0" prefWidth="372.0" />
+   </children>
+</AnchorPane>

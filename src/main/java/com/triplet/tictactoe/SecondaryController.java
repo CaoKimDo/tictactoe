@@ -14,7 +14,7 @@ public class SecondaryController {
     private Stage stage;
     private Scene scene;
     private Parent root;
-
+    
     @FXML
     private void switchToPrimary(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("fxml/primary.fxml"));
