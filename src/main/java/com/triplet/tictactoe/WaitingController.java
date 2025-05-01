@@ -33,14 +33,14 @@ public class WaitingController implements Initializable {
     }
 
     private void setRoomInfoListView() {
-        roomInfoListView.getItems().setAll(Player.roomInfo);
+        roomInfoListView.getItems().setAll(App.roomInfo);
     }
     
     private void setPlayersListView() {
-        playersListView.setItems(Player.playerNamesList);  // Binding
+        playersListView.setItems(App.playerNamesList);  // Binding
         
         // Add a listener to observe changes to the playerNamesList
-        Player.playerNamesList.addListener(new ListChangeListener<String>() {
+        App.playerNamesList.addListener(new ListChangeListener<String>() {
             @Override
             public void onChanged(Change<? extends String> change) {
                 Platform.runLater(() -> {
@@ -52,12 +52,14 @@ public class WaitingController implements Initializable {
     
     @FXML  // "LET'S PLAY!" button -> "Game" scene
     public void letsPlay() {
-        
+        System.out.println("[WaitingController] LET'S PLAY button hit.");  // Logging
     }
     
     @FXML  // "Close this room" button -> "MainMenu" scene
     public void returnMainMenu(ActionEvent event) throws Exception {
-        // Implement send close room request
+        Player.leaveRoom();
+        Player.closeRoom();
+        Player.disconnect();
 
         root = FXMLLoader.load(getClass().getResource("fxml/MainMenu.fxml"));
         scene = new Scene(root);

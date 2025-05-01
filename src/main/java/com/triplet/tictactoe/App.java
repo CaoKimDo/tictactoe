@@ -1,12 +1,21 @@
 package com.triplet.tictactoe;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,20 +23,31 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class App extends Application {
+    public static ArrayList<String> roomInfo = new ArrayList<String>();
+    public static ObservableList<String> playerNamesList = FXCollections.observableArrayList();
+    
     private static final int SERVER_PORT = 4848;
     private static final int BROADCAST_PORT = 8484;
 
     private static InetAddress serverIp;
     
-    public static InetAddress getServerIp() {
-        return serverIp;
-    }
-
-    public static int getServerPort() {
-        return SERVER_PORT;
+    private static Socket socket;
+    private static InputStreamReader inputStreamReader;
+    private static OutputStreamWriter outputStreamWriter;
+    private static BufferedReader bufferedReader;
+    private static BufferedWriter bufferedWriter;
+    
+    public static void send(String messageToBeSent) {
+        try {
+            bufferedWriter.write(messageToBeSent);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
     }
     
-    private void waitForServerConnection() {
+    private static void waitForServerConnection() {
         try {
             DatagramSocket datagramSocket = new DatagramSocket(BROADCAST_PORT);  // Listen on BROADCAST_PORT for broadcast
             
@@ -49,7 +69,57 @@ public class App extends Application {
             e.printStackTrace();
         }
     }
-    
+
+    private static void initCommunication() {
+        try {
+            socket = new Socket(serverIp, SERVER_PORT);
+            inputStreamReader = new InputStreamReader(socket.getInputStream());
+            outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
+            bufferedReader = new BufferedReader(inputStreamReader);
+            bufferedWriter = new BufferedWriter(outputStreamWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void listen() {
+        while (socket.isConnected()) {
+            try {
+                String[] messagePart = bufferedReader.readLine().split("\\|");  // Read the received message (Blocking command)
+                String key = messagePart[0];
+
+                switch (key) {
+                    case "roomInfo":
+                        roomInfo.addAll(Arrays.asList(messagePart).subList(1, messagePart.length));
+                        HostController.setValidRoom(true);
+
+                        System.out.println("[App] roomInfo & validRoom = true");  // Logging
+                        break;
+                    case "playerNamesList":
+                        Platform.runLater(() -> {
+                            playerNamesList.setAll(Arrays.asList(messagePart).subList(1, messagePart.length));
+                        });
+                        HostController.setValidPlayer(true);
+                        //JoinController.setValidPlayer(true);
+
+                        System.out.println("[App] playerNamesList & validPlayer = true");  // Logging
+                        break;
+                    case "INVALID_PLAYER":
+                        HostController.setValidPlayer(false);
+                        //JoinController.setValidPlayer(false);
+                        break;
+                    case "INVALID_ROOM":
+                        HostController.setValidRoom(false);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @SuppressWarnings("unused")
     @Override
     public void start(Stage stage) throws Exception {
@@ -81,6 +151,9 @@ public class App extends Application {
                     e.printStackTrace();
                 }
             });
+            
+            initCommunication();
+            listen();
         }).start();
     }
 }
