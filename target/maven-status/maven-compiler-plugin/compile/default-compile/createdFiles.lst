@@ -3,8 +3,12 @@ com\triplet\tictactoe\SecondaryController.class
 com\triplet\tictactoe\WaitingController.class
 com\triplet\tictactoe\App.class
 com\triplet\tictactoe\Player.class
+com\triplet\tictactoe\JoinController.class
+com\triplet\tictactoe\WaitingController$2.class
 com\triplet\tictactoe\ServerConnectionController.class
+com\triplet\tictactoe\JoinController$2.class
 com\triplet\tictactoe\MainMenuController.class
+com\triplet\tictactoe\JoinController$1.class
 module-info.class
 com\triplet\tictactoe\PrimaryController.class
 com\triplet\tictactoe\HostController.class

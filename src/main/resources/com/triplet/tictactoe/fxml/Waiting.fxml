@@ -15,8 +15,8 @@
             <Image url="@../images/Banner.png" />
          </image>
       </ImageView>
-      <Button layoutX="305.0" layoutY="512.0" mnemonicParsing="false" onAction="#letsPlay" prefHeight="26.0" prefWidth="190.0" text="LET'S PLAY!" />
-      <Button layoutX="30.0" layoutY="550.0" mnemonicParsing="false" onAction="#returnMainMenu" text="Close this room" />
+      <Button fx:id="letsPlayButton" layoutX="305.0" layoutY="512.0" mnemonicParsing="false" onAction="#letsPlay" prefHeight="26.0" prefWidth="190.0" text="LET'S PLAY!" />
+      <Button fx:id="closeOrLeaveButton" layoutX="30.0" layoutY="550.0" mnemonicParsing="false" onAction="#closeOrLeave" text="closeOrLeaveButton" />
       <Label layoutX="120.0" layoutY="299.0" text="Room information" underline="true">
          <font>
             <Font name="System Bold" size="20.0" />
@@ -33,6 +33,6 @@
          </font>
       </Label>
       <ListView fx:id="roomInfoListView" layoutX="30.0" layoutY="330.0" prefHeight="165.67" prefWidth="355.0" />
-      <ListView fx:id="playersListView" layoutX="415.0" layoutY="330.0" prefHeight="47.33" prefWidth="355.0" />
+      <ListView fx:id="roomPlayersListView" layoutX="415.0" layoutY="330.0" prefHeight="48.01" prefWidth="355.0" />
    </children>
 </AnchorPane>

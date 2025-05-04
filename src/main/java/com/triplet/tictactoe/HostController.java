@@ -13,7 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class HostController {
-    private static BooleanProperty validPlayer, validRoom;
+    private static BooleanProperty validPlayer = new SimpleBooleanProperty();
+    private static BooleanProperty validRoom = new SimpleBooleanProperty();
 
     private Stage stage;
     private Scene scene;
@@ -56,8 +57,8 @@ public class HostController {
         stage.setScene(scene);
         stage.show();
     }
-
-    @FXML  // "Host a new game" button -> "Waiting" scene
+    
+    @FXML  // "Host a new room" button -> "Waiting" scene
     @SuppressWarnings("unused")
     public void host(ActionEvent event) throws Exception {
         String roomName = roomNameTextField.getText();
@@ -72,11 +73,11 @@ public class HostController {
         validRoom = new SimpleBooleanProperty(false);
         
         Player.createPlayer(hostPlayerName);  // Create a new Player with the given name for the host player
-        // Notify the server to create a new room with the provided information
-        Player.createRoom(roomName, roomPassword, gridWidth, gridHeight, winCondition, gameTime, hostPlayerName);
-        Player.joinRoom(roomName);  // Join the created room
+        // Notify the server to create a new room with the provided information & join it
+        Player.createAndJoinRoom(roomName, roomPassword, gridWidth, gridHeight, winCondition, gameTime, hostPlayerName);
         
         validPlayer.and(validRoom).addListener((observable, oldValue, newValue) -> {
+            System.out.println("[JoinController] validPlayer & validRoom: " + newValue);  // Logging
             if (newValue)
                 Platform.runLater(() -> {
                     try {

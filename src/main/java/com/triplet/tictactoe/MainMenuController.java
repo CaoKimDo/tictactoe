@@ -29,13 +29,15 @@ public class MainMenuController {
         stage.show();
     }
     
-    @FXML  // "Join a game" button -> "JoinMenu" scene
-    public void joinAGame(ActionEvent event) throws Exception {
-        setRootSceneStage(event, "primary");
+    @FXML  // "Join a room" button -> "JoinMenu" scene
+    public void joinARoom(ActionEvent event) throws Exception {
+        Player.setIsHost(false);
+        setRootSceneStage(event, "JoinMenu");
     }
 
-    @FXML  // "Host a new game" button -> "HostMenu" scene
-    public void hostANewGame(ActionEvent event) throws Exception {
+    @FXML  // "Host a new room" button -> "HostMenu" scene
+    public void hostANewRoom(ActionEvent event) throws Exception {
+        Player.setIsHost(true);
         setRootSceneStage(event, "HostMenu");
     }
     

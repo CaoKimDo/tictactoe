@@ -9,7 +9,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javafx.application.Application;
@@ -23,12 +22,13 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class App extends Application {
-    public static ArrayList<String> roomInfo = new ArrayList<String>();
-    public static ObservableList<String> playerNamesList = FXCollections.observableArrayList();
+    public static ObservableList<String> roomList = FXCollections.observableArrayList();
+    public static ObservableList<String> roomInfo = FXCollections.observableArrayList();
+    public static ObservableList<String> roomPlayers = FXCollections.observableArrayList();
     
     private static final int SERVER_PORT = 4848;
     private static final int BROADCAST_PORT = 8484;
-
+    
     private static InetAddress serverIp;
     
     private static Socket socket;
@@ -89,39 +89,57 @@ public class App extends Application {
                 String key = messagePart[0];
 
                 switch (key) {
+                    case "roomList":
+                        Platform.runLater(() -> {
+                            roomList.setAll(Arrays.asList(messagePart).subList(1, messagePart.length));
+                        });
+                        
+                        System.out.println("[App] roomList: " + roomList);  // Logging
+                        break;
                     case "roomInfo":
-                        roomInfo.addAll(Arrays.asList(messagePart).subList(1, messagePart.length));
+                        Platform.runLater(() -> {
+                            roomInfo.setAll(Arrays.asList(messagePart).subList(1, messagePart.length));
+                        });
+
+                        System.out.println("[App] roomInfo: " + roomInfo);  // Logging
+                        break;
+                    case "roomPlayers":
+                        Platform.runLater(() -> {
+                            roomPlayers.setAll(Arrays.asList(messagePart).subList(1, messagePart.length));
+                        });
+                        
+                        System.out.println("[App] roomPlayers: " + roomPlayers);  // Logging
+                        break;
+                    case "VALID_PLAYER":
+                        if (Player.checkIsHost())
+                            HostController.setValidPlayer(true);
+                        else
+                            JoinController.setValidPlayer(true);
+
+                        System.out.println("[App] validPlayer = true");  // Logging
+                        break;
+                    case "VALID_ROOM":
                         HostController.setValidRoom(true);
 
-                        System.out.println("[App] roomInfo & validRoom = true");  // Logging
+                        System.out.println("[App] validRoom = true");  // Logging
                         break;
-                    case "playerNamesList":
-                        Platform.runLater(() -> {
-                            playerNamesList.setAll(Arrays.asList(messagePart).subList(1, messagePart.length));
-                        });
-                        HostController.setValidPlayer(true);
-                        //JoinController.setValidPlayer(true);
+                    case "VALID_JOIN":
+                        JoinController.setValidJoin(true);
 
-                        System.out.println("[App] playerNamesList & validPlayer = true");  // Logging
-                        break;
-                    case "INVALID_PLAYER":
-                        HostController.setValidPlayer(false);
-                        //JoinController.setValidPlayer(false);
-                        break;
-                    case "INVALID_ROOM":
-                        HostController.setValidRoom(false);
+                        System.out.println("[App] validJoin = true");  // Logging
                         break;
                     default:
                         break;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                break;
             }
         }
     }
-
-    @SuppressWarnings("unused")
+    
     @Override
+    @SuppressWarnings("unused")
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("fxml/ServerConnection.fxml"));
         Scene scene = new Scene(root);

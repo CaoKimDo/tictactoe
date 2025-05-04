@@ -1,0 +1,23 @@
+-------- Server --------
+- NEW_PLAYER: Check player name
+	v Set player name -> Return VALID_PLAYER
+
+- REMOVE_PLAYER: Set player name to ""
+
+- CREATE_AND_JOIN_ROOM: Check room name & player validation (Only valid players can create new room)
+	x Remove the player (in case of successful player creation but unsuccessful room creation)
+	v Create new Room Obj with the given info (also add it to roomList) -> Add the player's playerHandler to the room -> Set playerHandler's playerRoom -> Return VALID_ROOM -> Send roomInfo & roomPlayers to players in the room -> Broadcast updated roomList
+
+- JOIN_ROOM: Find the room in roomList -> Check password & player validation (only valid players can join room)
+	x Remove the player (in case of successful player creation but incorrect password or room is full)
+	v Add the player's playerHandler to the room -> Set playerHandler's playerRoom -> Return VALID_JOIN -> Send roomInfo & roomPlayers to players in the room
+
+- LEAVE_ROOM: Remove the player's playerHandler from the room -> Remove playerHandler's playerRoom -> Send roomPlayers to players in the room
+
+- CLOSE_ROOM: Find the room in roomList -> Remove from roomList -> Broadcast updated roomList
+
+- VIEW_ROOM: Find the room in roomList
+	x Send empty roomInfo
+	v Send roomInfo
+
+- GET_ROOMLIST: Send roomList
