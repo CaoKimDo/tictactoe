@@ -18,6 +18,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -139,7 +142,6 @@ public class App extends Application {
     }
     
     @Override
-    @SuppressWarnings("unused")
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("fxml/ServerConnection.fxml"));
         Scene scene = new Scene(root);
@@ -149,8 +151,22 @@ public class App extends Application {
         stage.setScene(scene);
         stage.getIcons().add(icon);
         stage.setTitle("TripleT Tic-tac-toe");
+        stage.setResizable(false);
         stage.setOnCloseRequest(event -> {
-            System.exit(0);
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            
+            alert.setTitle("Confirm Quit");
+            alert.setHeaderText("You are about to quit the game.");
+            alert.setContentText("Are you sure you want to exit?");
+            
+            // Set custom icon
+            Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+            alertStage.getIcons().add(new Image(getClass().getResource("images/App's icon.png").toString()));
+            
+            if (alert.showAndWait().get() == ButtonType.OK)
+                System.exit(0);
+            else
+                event.consume();  // Prevents window from closing
         });
         stage.show();
         

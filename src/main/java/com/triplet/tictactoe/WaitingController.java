@@ -12,8 +12,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class WaitingController implements Initializable {
@@ -104,6 +108,22 @@ public class WaitingController implements Initializable {
         
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
+        stage.setOnCloseRequest(eventOnClose -> {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            
+            alert.setTitle("Confirm Quit");
+            alert.setHeaderText("You are about to quit the game.");
+            alert.setContentText("Are you sure you want to exit?");
+            
+            // Set custom icon
+            Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+            alertStage.getIcons().add(new Image(getClass().getResource("images/App's icon.png").toString()));
+            
+            if (alert.showAndWait().get() == ButtonType.OK)
+                System.exit(0);
+            else
+                eventOnClose.consume();  // Prevents window from closing
+        });
         stage.show();
     }
 }
