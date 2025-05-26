@@ -67,6 +67,7 @@ public class RankingController implements Initializable {
         nameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         totalScoreTableColumn.setCellValueFactory(new PropertyValueFactory<>("totalScore"));
 
+        rankingTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         rankingTableView.setItems(App.rankingDataList);
         App.rankingDataList.addListener(rankingDataListListener);
     }
