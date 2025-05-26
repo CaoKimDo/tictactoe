@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 public class ServerConnectionController {
     @FXML  // "Quit" button -> Confirm & close the game
-    public void Quit(ActionEvent event) throws Exception {
+    private void Quit(ActionEvent event) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         
         alert.setTitle("Confirm Quit");

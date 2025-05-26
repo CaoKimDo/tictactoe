@@ -1,5 +1,6 @@
 package com.triplet.tictactoe;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -91,34 +92,10 @@ public class JoinController implements Initializable {
 
         selectedRoom = null;
     }
-    
-    private void setListViews() {
-        // Binding
-        roomListListView.setItems(App.roomList);
-        roomInfoListView.setItems(App.roomInfo);
 
-        // Add listeners
-        App.roomList.addListener(roomListListener);
-        App.roomInfo.addListener(roomInfoListener);
-    }
-
-    private void removeListeners() {
-        App.roomList.removeListener(roomListListener);
-        App.roomInfo.removeListener(roomInfoListener);
-    }
-    
-    private void setRootSceneStage(ActionEvent event, String root) throws Exception{
-        this.root = FXMLLoader.load(getClass().getResource("fxml/" + root + ".fxml"));
-        scene = new Scene(this.root);
-        
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-    }
-    
     @FXML  // "JOIN" button -> "Waiting" scene
     @SuppressWarnings("unused")
-    public void join(ActionEvent event) throws Exception {
+    private void join(ActionEvent event) {
         validPlayer = new SimpleBooleanProperty(false);
         validJoin = new SimpleBooleanProperty(false);
         
@@ -153,7 +130,7 @@ public class JoinController implements Initializable {
                             } else
                                 eventOnClose.consume();  // Prevents window from closing
                         });
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
@@ -161,8 +138,32 @@ public class JoinController implements Initializable {
     }
     
     @FXML  // "Return" button -> "MainMenu" scene
-    public void returnMainMenu(ActionEvent event) throws Exception {
+    private void returnMainMenu(ActionEvent event) throws IOException {
         removeListeners();
         setRootSceneStage(event, "MainMenu");
+    }
+
+    private void setListViews() {
+        // Binding
+        roomListListView.setItems(App.roomList);
+        roomInfoListView.setItems(App.roomInfo);
+
+        // Add listeners
+        App.roomList.addListener(roomListListener);
+        App.roomInfo.addListener(roomInfoListener);
+    }
+    
+    private void removeListeners() {
+        App.roomList.removeListener(roomListListener);
+        App.roomInfo.removeListener(roomInfoListener);
+    }
+    
+    private void setRootSceneStage(ActionEvent event, String root) throws IOException {
+        this.root = FXMLLoader.load(getClass().getResource("fxml/" + root + ".fxml"));
+        scene = new Scene(this.root);
+
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 }

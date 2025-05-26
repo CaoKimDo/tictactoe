@@ -1,5 +1,6 @@
 package com.triplet.tictactoe;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -69,29 +70,19 @@ public class WaitingController implements Initializable {
             closeOrLeaveButton.setText("Leave this room");
     }
 
-    private void setListViews() {
-        // Binding
-        roomInfoListView.setItems(App.roomInfo);
-        roomPlayersListView.setItems(App.roomPlayers);
-
-        // Add listeners
-        App.roomInfo.addListener(roomInfoListener);
-        App.roomPlayers.addListener(roomPlayersListener);
-    }
-
-    private void removeListeners() {
-        App.roomInfo.removeListener(roomInfoListener);
-        App.roomPlayers.removeListener(roomPlayersListener);
-    }
-
     @FXML  // "LET'S PLAY!" button -> "Game" scene
-    public void letsPlay() {
-        removeListeners();
-        System.out.println("[WaitingController] LET'S PLAY button is hit.");  // Logging
+    private void letsPlay(ActionEvent event) {
+        if (App.roomPlayers.size() == 2) {
+            System.out.println("[WaitingController] LET'S PLAY!");  // Logging
+            
+            Player.start();
+            removeListeners();
+        } else
+            System.out.println("[WaitingController] Not enough players!");  // Logging
     }
     
     @FXML  // "closeOrLeaveButton" button -> "MainMenu" scene
-    public void closeOrLeave(ActionEvent event) throws Exception {
+    private void closeOrLeave(ActionEvent event) throws IOException {
         Player.leaveRoom();
         
         if (Player.checkIsHost()) {
@@ -125,5 +116,20 @@ public class WaitingController implements Initializable {
                 eventOnClose.consume();  // Prevents window from closing
         });
         stage.show();
+    }
+    
+    private void setListViews() {
+        // Binding
+        roomInfoListView.setItems(App.roomInfo);
+        roomPlayersListView.setItems(App.roomPlayers);
+
+        // Add listeners
+        App.roomInfo.addListener(roomInfoListener);
+        App.roomPlayers.addListener(roomPlayersListener);
+    }
+    
+    private void removeListeners() {
+        App.roomInfo.removeListener(roomInfoListener);
+        App.roomPlayers.removeListener(roomPlayersListener);
     }
 }

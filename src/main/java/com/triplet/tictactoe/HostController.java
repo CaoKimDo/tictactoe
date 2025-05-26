@@ -1,5 +1,7 @@
 package com.triplet.tictactoe;
 
+import java.io.IOException;
+
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -52,19 +54,10 @@ public class HostController {
     public static void setValidRoom(boolean value) {
         validRoom.set(value);
     }
-
-    private void setRootSceneStage(ActionEvent event, String root) throws Exception{
-        this.root = FXMLLoader.load(getClass().getResource("fxml/" + root + ".fxml"));
-        scene = new Scene(this.root);
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-    }
     
     @FXML  // "Host a new room" button -> "Waiting" scene
     @SuppressWarnings("unused")
-    public void host(ActionEvent event) throws Exception {
+    private void host(ActionEvent event) {
         String roomName = roomNameTextField.getText();
         String roomPassword = roomPasswordTextField.getText();
         int gridWidth = Integer.parseInt(gridWidthTextField.getText());
@@ -107,7 +100,7 @@ public class HostController {
                             } else
                                 eventOnClose.consume();  // Prevents window from closing
                         });
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
@@ -115,7 +108,16 @@ public class HostController {
     }
     
     @FXML  // "Return" button -> "MainMenu" scene
-    public void returnMainMenu(ActionEvent event) throws Exception {
+    private void returnMainMenu(ActionEvent event) throws IOException {
         setRootSceneStage(event, "MainMenu");
+    }
+
+    private void setRootSceneStage(ActionEvent event, String root) throws IOException {
+        this.root = FXMLLoader.load(getClass().getResource("fxml/" + root + ".fxml"));
+        scene = new Scene(this.root);
+
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 }

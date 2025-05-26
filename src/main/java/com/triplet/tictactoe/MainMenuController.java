@@ -1,6 +1,7 @@
 package com.triplet.tictactoe;
 
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 
 import javafx.event.ActionEvent;
@@ -19,40 +20,31 @@ public class MainMenuController {
     private Stage stage;
     private Scene scene;
     private Parent root;
-
-    private void setRootSceneStage(ActionEvent event, String root) throws Exception{
-        this.root = FXMLLoader.load(getClass().getResource("fxml/" + root + ".fxml"));
-        scene = new Scene(this.root);
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-    }
     
     @FXML  // "Join a room" button -> "JoinMenu" scene
-    public void joinARoom(ActionEvent event) throws Exception {
-        Player.setIsHost(false);
+    private void joinARoom(ActionEvent event) throws IOException {
+        Player.setIsHostAndPlayerMark(false, "O");
         setRootSceneStage(event, "JoinMenu");
     }
 
     @FXML  // "Host a new room" button -> "HostMenu" scene
-    public void hostANewRoom(ActionEvent event) throws Exception {
-        Player.setIsHost(true);
+    private void hostANewRoom(ActionEvent event) throws IOException {
+        Player.setIsHostAndPlayerMark(true, "X");
         setRootSceneStage(event, "HostMenu");
     }
     
     @FXML  // "Ranking" button -> "Ranking" scene
-    public void Ranking(ActionEvent event) throws Exception {
-        setRootSceneStage(event, "primary");
+    private void Ranking(ActionEvent event) {
+        
     }
     
     @FXML  // "More information & How to play" button -> Open the URL in web browser
-    public void Information(ActionEvent event) throws Exception {
+    private void Information(ActionEvent event) throws Exception {
         Desktop.getDesktop().browse(new URI("https://github.com/CaoKimDo/tictactoe"));
     }
     
     @FXML  // "Quit" button -> Confirm & close the game
-    public void Quit(ActionEvent event) throws Exception {
+    private void Quit(ActionEvent event) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         
         alert.setTitle("Confirm Quit");
@@ -65,5 +57,14 @@ public class MainMenuController {
         
         if (alert.showAndWait().get() == ButtonType.OK)
             System.exit(0);
+    }
+    
+    private void setRootSceneStage(ActionEvent event, String root) throws IOException {
+        this.root = FXMLLoader.load(getClass().getResource("fxml/" + root + ".fxml"));
+        scene = new Scene(this.root);
+        
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 }

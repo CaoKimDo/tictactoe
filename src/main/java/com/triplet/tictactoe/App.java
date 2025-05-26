@@ -22,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -39,6 +40,8 @@ public class App extends Application {
     private static OutputStreamWriter outputStreamWriter;
     private static BufferedReader bufferedReader;
     private static BufferedWriter bufferedWriter;
+
+    private static Stage appStage;
     
     public static void send(String messageToBeSent) {
         try {
@@ -48,6 +51,30 @@ public class App extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         } 
+    }
+    
+    public static Stage getAppStage() {
+        appStage.setOnCloseRequest(eventOnClose -> {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            
+            alert.setTitle("Confirm Quit");
+            alert.setHeaderText("You are about to quit the game. If you do so, your opponent will win this game.");
+            alert.setContentText("Are you sure you want to exit?");
+            
+            // Set custom icon
+            Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+            alertStage.getIcons().add(new Image(App.class.getResource("images/App's icon.png").toString()));
+            
+            if (alert.showAndWait().get() == ButtonType.OK) {
+                if (GameController.getGameController().getsurrenderOrReturnButtonText().equals("Surrender"))
+                    Player.surrender();
+
+                Player.shutdown();
+            } else
+                eventOnClose.consume();  // Prevents window from closing
+        });
+        
+        return appStage;
     }
     
     private static void waitForServerConnection() {
@@ -113,6 +140,127 @@ public class App extends Application {
                         
                         System.out.println("[App] roomPlayers: " + roomPlayers);  // Logging
                         break;
+                    case "boardInfo":
+                        GameController.getGameController().setBoardInfo(Integer.parseInt(messagePart[1]), Integer.parseInt(messagePart[2]), Integer.parseInt(messagePart[3]));
+                        
+                        Platform.runLater(() -> {
+                            try {
+                                GameController.getGameController().start();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+                        System.out.println("[App] boardInfo");  // Logging
+                        break;
+                    case "timer":
+                        int remainingTimeInSeconds = Integer.parseInt(messagePart[1]);
+                        int h = remainingTimeInSeconds / 3600;
+                        int m = remainingTimeInSeconds % 3600 / 60;
+                        int s = remainingTimeInSeconds % 60;
+
+                        String remainingTime;
+                        if (h > 0)
+                            remainingTime = h + "h " + m + "m";
+                        else if (m > 0)
+                            remainingTime = m + "m " + s + "s";
+                        else
+                            remainingTime = s + "s";
+                            
+                        GameController.getGameController().setTimerLabel(remainingTime);
+                        break;
+                    case "turn":
+                        if (Player.getPlayerName().equals(messagePart[1])) {
+                            GameController.getGameController().setTurnLabel("Your turn!");
+                            GameController.getGameController().getBoardGridPane().setMouseTransparent(false);
+                        } else
+                            GameController.getGameController().setTurnLabel("Opponent's turn.");
+                            
+                        System.out.println("[App] turn");  // Logging
+                        break;
+                    case "mark":
+                        if (Player.getPlayerMark().equals("X"))
+                            GameController.getGameController().getBoard().markButton(Integer.parseInt(messagePart[1]), Integer.parseInt(messagePart[2]), "O");
+                        else
+                            GameController.getGameController().getBoard().markButton(Integer.parseInt(messagePart[1]), Integer.parseInt(messagePart[2]), "X");
+
+                        System.out.println("[App] mark");  // Logging
+                        break;
+                    case "message":
+                        GameController.getGameController().displayMessage(messagePart[1], messagePart[2].replace("\\n", "\n"));
+                        
+                        System.out.println("[App] message");  // Logging
+                        break;
+                    case "win":
+                        if (Player.getPlayerName().equals(messagePart[1]))
+                            GameController.getGameController().setStatusLabel("You are the winner!");
+                        else
+                            GameController.getGameController().setStatusLabel("The opponent wins!");
+
+                        GameController.getGameController().setSurrenderOrReturnButton("Return");
+                            
+                        System.out.println("[App] win");  // Logging
+                        break;
+                    case "full":
+                        GameController.getGameController().setStatusLabel("Draw!");
+                        GameController.getGameController().setReasonLabel("(The board is full.)");
+                        GameController.getGameController().setSurrenderOrReturnButton("Return");
+
+                        System.out.println("[App] full");  // Logging
+                        break;
+                    case "timeIsUp":
+                        GameController.getGameController().getBoardGridPane().setMouseTransparent(true);
+                        GameController.getGameController().setStatusLabel("Draw!");
+                        GameController.getGameController().setReasonLabel("(No one wins because the time is up.)");
+                        GameController.getGameController().setSurrenderOrReturnButton("Return");
+                        
+                        System.out.println("[App] timeIsUp");  // Logging
+                        break;
+                    case "surrender":
+                        GameController.getGameController().getBoardGridPane().setMouseTransparent(true);
+
+                        if (Player.getPlayerName().equals(messagePart[1])) {
+                            GameController.getGameController().setStatusLabel("You lose!");
+                            GameController.getGameController().setReasonLabel("(Because you surrendered)");
+                        } else {
+                            GameController.getGameController().setStatusLabel("You win!");
+                            GameController.getGameController().setReasonLabel("(The opponent surrendered.)");
+                        }
+
+                        GameController.getGameController().setSurrenderOrReturnButton("Return");
+
+                        System.out.println("[App] surrender");  // Logging
+                        break;
+                    case "return":
+                        if (Player.checkIsHost())
+                            GameController.getGameController().setRootSceneStage("Waiting");  // Switch to "Waiting" scene
+                        else {
+                            Player.leaveRoom();
+                            Player.disconnect();
+
+                            GameController.getGameController().setRootSceneStage("MainMenu");  // Swith to "MainMenu" scene
+                        }
+
+                        System.out.println("[App] return");  // Logging
+                        break;
+                    case "shutdown":
+                        if (Player.getPlayerName().equals(messagePart[1])) {
+                            Player.leaveRoom();
+
+                            if (Player.checkIsHost())
+                                Player.closeRoom();
+
+                            Player.disconnect();
+
+                            System.exit(0);
+                        } else {
+                            if (Player.checkIsHost())
+                                GameController.getGameController().setRootSceneStage("Waiting");  // Switch to "Waiting" scene
+                            else
+                                GameController.getGameController().setRootSceneStage("MainMenu");  // Swith to "MainMenu" scene
+                        }
+                        
+                        break;
                     case "VALID_PLAYER":
                         if (Player.checkIsHost())
                             HostController.setValidPlayer(true);
@@ -142,7 +290,7 @@ public class App extends Application {
     }
     
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("fxml/ServerConnection.fxml"));
         Scene scene = new Scene(root);
         Image icon = new Image(getClass().getResource("images/App's icon.png").toString());
@@ -169,6 +317,10 @@ public class App extends Application {
                 event.consume();  // Prevents window from closing
         });
         stage.show();
+        stage.setX((Screen.getPrimary().getVisualBounds().getWidth() - stage.getWidth()) / 2);
+        stage.setY((Screen.getPrimary().getVisualBounds().getHeight() - stage.getHeight()) / 2);
+
+        appStage = stage;  // This will be later used by the GameController
         
         // Start connection logic when the "ServerConnection" scene is loaded
         new Thread(() -> {
