@@ -26,6 +26,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {
+    public static ObservableList<RankingData> rankingDataList = FXCollections.observableArrayList();
     public static ObservableList<String> roomList = FXCollections.observableArrayList();
     public static ObservableList<String> roomInfo = FXCollections.observableArrayList();
     public static ObservableList<String> roomPlayers = FXCollections.observableArrayList();
@@ -119,6 +120,13 @@ public class App extends Application {
                 String key = messagePart[0];
 
                 switch (key) {
+                    case "ranking":
+                        RankingData rankingData = new RankingData(Integer.parseInt(messagePart[1]), messagePart[2], Integer.parseInt(messagePart[3]));
+                        Platform.runLater(() -> {
+                            rankingDataList.add(rankingData);
+                        });
+
+                        break;
                     case "roomList":
                         Platform.runLater(() -> {
                             roomList.setAll(Arrays.asList(messagePart).subList(1, messagePart.length));
@@ -259,6 +267,12 @@ public class App extends Application {
                             else
                                 GameController.getGameController().setRootSceneStage("MainMenu");  // Swith to "MainMenu" scene
                         }
+                        
+                        break;
+                    case "RANKING_UPDATE":
+                        Platform.runLater(() -> {
+                            rankingDataList.clear();
+                        });
                         
                         break;
                     case "VALID_PLAYER":

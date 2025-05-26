@@ -68,10 +68,18 @@ public class HostController {
         
         validPlayer = new SimpleBooleanProperty(false);
         validRoom = new SimpleBooleanProperty(false);
-        
-        Player.createPlayer(hostPlayerName);  // Create a new Player with the given name for the host player
+
+        // Create a new Player with the given name for the host player
+        if (!hostPlayerName.isEmpty())
+            Player.createPlayer(hostPlayerName);
+
         // Notify the server to create a new room with the provided information & join it
-        Player.createAndJoinRoom(roomName, roomPassword, gridWidth, gridHeight, winCondition, gameTime, hostPlayerName);
+        if (!roomName.isEmpty() && gridWidth > 2 && gridHeight > 2 && winCondition > 2 && winCondition <= Math.max(gridWidth, gridWidth) && gameTime > 0) {
+            if (!roomPassword.isEmpty())
+                Player.createAndJoinRoom(roomName, roomPassword, gridWidth, gridHeight, winCondition, gameTime, hostPlayerName);
+            else
+                Player.createAndJoinRoom(roomName, "!TripleT@1029384756Default", gridWidth, gridHeight, winCondition, gameTime, hostPlayerName);
+        }
         
         validPlayer.and(validRoom).addListener((observable, oldValue, newValue) -> {
             System.out.println("[JoinController] validPlayer & validRoom: " + newValue);  // Logging

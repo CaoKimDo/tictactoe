@@ -99,9 +99,16 @@ public class JoinController implements Initializable {
         validPlayer = new SimpleBooleanProperty(false);
         validJoin = new SimpleBooleanProperty(false);
         
-        Player.createPlayer(playerNameTextField.getText());  // Create a new Player with the given name for the player
-        Player.joinRoom(selectedRoom, roomPasswordTextField.getText());  // Join the created room
-        
+        // Create a new Player with the given name for the player
+        if (!playerNameTextField.getText().isEmpty())
+            Player.createPlayer(playerNameTextField.getText());
+
+        // Join the created room
+        if (!roomPasswordTextField.getText().isEmpty())
+            Player.joinRoom(selectedRoom, roomPasswordTextField.getText());
+        else
+            Player.joinRoom(selectedRoom, "!TripleT@1029384756Default");
+            
         validPlayer.and(validJoin).addListener((observable, oldValue, newValue) -> {
             System.out.println("[JoinController] validPlayer & validJoin: " + newValue);  // Logging
             if (newValue)

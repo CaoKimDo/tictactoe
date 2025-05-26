@@ -1,14 +1,17 @@
 com\triplet\tictactoe\Player.class
 com\triplet\tictactoe\Board.class
 com\triplet\tictactoe\ServerConnectionController.class
+com\triplet\tictactoe\RankingController.class
 com\triplet\tictactoe\JoinController$1.class
 com\triplet\tictactoe\GameController.class
 module-info.class
+com\triplet\tictactoe\RankingData.class
 com\triplet\tictactoe\HostController.class
 com\triplet\tictactoe\Launch.class
 com\triplet\tictactoe\WaitingController.class
 com\triplet\tictactoe\App.class
 com\triplet\tictactoe\JoinController.class
+com\triplet\tictactoe\RankingController$1.class
 com\triplet\tictactoe\WaitingController$2.class
 com\triplet\tictactoe\JoinController$2.class
 com\triplet\tictactoe\MainMenuController.class

@@ -34,8 +34,9 @@ public class MainMenuController {
     }
     
     @FXML  // "Ranking" button -> "Ranking" scene
-    private void Ranking(ActionEvent event) {
-        
+    private void Ranking(ActionEvent event) throws IOException {
+        Player.ranking();
+        setRootSceneStage(event, "Ranking");
     }
     
     @FXML  // "More information & How to play" button -> Open the URL in web browser

@@ -28,6 +28,10 @@ public class Player {
         Player.playerMark = playerMark;
     }
     
+    public static void ranking() {
+        App.send("RANKING");
+    }
+    
     public static void createPlayer(String playerName) {
         Player.playerName = playerName;  // Set player's name
         App.send("NEW_PLAYER|" + Player.playerName);
